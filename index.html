@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindMath Brain Trainer</title>
+    <style>
+        /* General Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(to bottom, #e6f0ff, #b3d1ff);
+            padding: 16px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 700px;
+        }
+        
+        .screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            padding: 24px;
+            background-color: #f0f7ff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 28px;
+            font-weight: bold;
+            color: #1a56db;
+            text-align: center;
+        }
+        
+        p {
+            font-size: 16px;
+            text-align: center;
+        }
+        
+        .input-group {
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        label {
+            display: block;
+            color: #4a5568;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        input[type="number"] {
+            padding: 12px;
+            font-size: 24px;
+            text-align: center;
+        }
+        
+        .feedback {
+            font-size: 16px;
+        }
+        
+        .success {
+            color: #48bb78;
+        }
+        
+        .error {
+            color: #e53e3e;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 16px;
+        }
+        
+        button {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .primary-button {
+            background-color: #3182ce;
+            color: white;
+        }
+        
+        .primary-button:hover {
+            background-color: #2c5282;
+        }
+        
+        .secondary-button {
+            background-color: #e2e8f0;
+            color: #2d3748;
+        }
+        
+        .secondary-button:hover {
+            background-color: #cbd5e0;
+        }
+        
+        .green-button {
+            background-color: #48bb78;
+            color: white;
+        }
+        
+        .green-button:hover {
+            background-color: #38a169;
+        }
+        
+        .red-button {
+            background-color: #e53e3e;
+            color: white;
+        }
+        
+        .red-button:hover {
+            background-color: #c53030;
+        }
+        
+        /* Home Screen */
+        .home-screen {
+            display: block;
+        }
+        
+        /* Quiz Screen */
+        .quiz-screen {
+            display: none;
+        }
+        
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+        
+        .quiz-stats {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+        
+        .question {
+            font-size: 36px;
+            font-weight: bold;
+            margin: 32px 0;
+        }
+        
+        /* Results Screen */
+        .results-screen {
+            display: none;
+        }
+        
+        .score-display {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .history-container {
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .history-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+        
+        .history-list {
+            background-color: white;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .history-item {
+            margin-bottom: 8px;
+            padding: 8px;
+            border-radius: 4px;
+        }
+        
+        .correct {
+            background-color: #c6f6d5;
+        }
+        
+        .incorrect {
+            background-color: #fed7d7;
+        }
+        
+        .question-text {
+            font-weight: 500;
+        }
+        
+        .answer-text {
+            font-size: 14px;
+        }
+        
+        /* Leaderboard Screen */
+        .leaderboard-screen {
+            display: none;
+        }
+        
+        .leaderboard-container {
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .leaderboard-table {
+            width: 100%;
+            background-color: white;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        th {
+            font-weight: 600;
+        }
+        
+        td:last-child {
+            text-align: right;
+        }
+        
+        .highlighted-row {
+            background-color: #fefcbf;
+        }
+        
+        .research-section {
+            text-align: center;
+            font-size: 14px;
+            color: #718096;
+            margin-top: 16px;
+        }
+        
+        .research-title {
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Home Screen -->
+        <div id="homeScreen" class="screen home-screen">
+            <h1>MindMath Brain Trainer</h1>
+            <p>Sharpen your arithmetic skills with timed math challenges!</p>
+            
+            <div class="input-group">
+                <label for="userName">Enter Your Name:</label>
+                <input type="text" id="userName" placeholder="Your name">
+            </div>
+            
+            <div class="input-group">
+                <label for="difficulty">Select Difficulty:</label>
+                <select id="difficulty">
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </div>
+            
+            <div id="homeFeedback" class="feedback error"></div>
+            
+            <button id="startQuizBtn" class="primary-button">Start Quiz</button>
+            <button id="viewLeaderboardBtn" class="secondary-button">View Leaderboard</button>
+        </div>
+        
+        <!-- Quiz Screen -->
+        <div id="quizScreen" class="screen quiz-screen">
+            <div class="quiz-header">
+                <h2 id="difficultyDisplay">Difficulty: Easy</h2>
+                <div id="timerDisplay" class="timer">Time: 30s</div>
+            </div>
+            
+            <div class="quiz-stats">
+                <div id="scoreDisplay">Score: 0</div>
+                <div id="userNameDisplay"></div>
+            </div>
+            
+            <div id="questionDisplay" class="question">5 + 3 = ?</div>
+            
+            <div class="input-group">
+                <input type="number" id="userAnswer" placeholder="Your answer" autofocus>
+            </div>
+            
+            <div id="quizFeedback" class="feedback"></div>
+            
+            <div class="button-group">
+                <button id="submitAnswerBtn" class="green-button">Submit Answer</button>
+                <button id="endQuizBtn" class="red-button">End Quiz</button>
+            </div>
+        </div>
+        
+        <!-- Results Screen -->
+        <div id="resultsScreen" class="screen results-screen">
+            <h1>Quiz Results</h1>
+            
+            <div id="finalScoreDisplay" class="score-display">Final Score: 0</div>
+            
+            <div class="history-container">
+                <h2 class="history-title">Question History:</h2>
+                <div id="historyList" class="history-list">
+                    <!-- Question history items will be added here -->
+                </div>
+            </div>
+            
+            <button id="playAgainBtn" class="primary-button">Play Again</button>
+            <button id="resultsLeaderboardBtn" class="secondary-button">View Leaderboard</button>
+        </div>
+        
+        <!-- Leaderboard Screen -->
+        <div id="leaderboardScreen" class="screen leaderboard-screen">
+            <h1>Leaderboard</h1>
+            
+            <div class="leaderboard-container">
+                <div class="leaderboard-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Name</th>
+                                <th>Score</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboardBody">
+                            <!-- Leaderboard entries will be added here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="research-section">
+                <h3 class="research-title">Research Insights:</h3>
+                <p>Adaptive learning algorithms like Lumosity and Elevate adjust difficulty based on user performance patterns to optimize cognitive growth.</p>
+            </div>
+            
+            <button id="backToHomeBtn" class="primary-button">Back to Home</button>
+        </div>
+    </div>
+
+    <script>
+        // App state
+        const state = {
+            currentScreen: 'home',
+            difficulty: 'easy',
+            timeLeft: 30,
+            score: 0,
+            currentQuestion: {},
+            quizActive: false,
+            quizHistory: [],
+            leaderboard: [
+                { name: 'VASU', score: 95 },
+                { name: 'VYSHU', score: 87 },
+                { name: 'SHIVA', score: 82 },
+                { name: 'SANTHU', score: 78 },
+                { name: 'RAVI', score: 72 }
+            ],
+            userName: '',
+            timerInterval: null
+        };
+
+        // DOM elements
+        const elements = {
+            // Screens
+            homeScreen: document.getElementById('homeScreen'),
+            quizScreen: document.getElementById('quizScreen'),
+            resultsScreen: document.getElementById('resultsScreen'),
+            leaderboardScreen: document.getElementById('leaderboardScreen'),
+            
+            // Home screen elements
+            userName: document.getElementById('userName'),
+            difficulty: document.getElementById('difficulty'),
+            homeFeedback: document.getElementById('homeFeedback'),
+            startQuizBtn: document.getElementById('startQuizBtn'),
+            viewLeaderboardBtn: document.getElementById('viewLeaderboardBtn'),
+            
+            // Quiz screen elements
+            difficultyDisplay: document.getElementById('difficultyDisplay'),
+            timerDisplay: document.getElementById('timerDisplay'),
+            scoreDisplay: document.getElementById('scoreDisplay'),
+            userNameDisplay: document.getElementById('userNameDisplay'),
+            questionDisplay: document.getElementById('questionDisplay'),
+            userAnswer: document.getElementById('userAnswer'),
+            quizFeedback: document.getElementById('quizFeedback'),
+            submitAnswerBtn: document.getElementById('submitAnswerBtn'),
+            endQuizBtn: document.getElementById('endQuizBtn'),
+            
+            // Results screen elements
+            finalScoreDisplay: document.getElementById('finalScoreDisplay'),
+            historyList: document.getElementById('historyList'),
+            playAgainBtn: document.getElementById('playAgainBtn'),
+            resultsLeaderboardBtn: document.getElementById('resultsLeaderboardBtn'),
+            
+            // Leaderboard screen elements
+            leaderboardBody: document.getElementById('leaderboardBody'),
+            backToHomeBtn: document.getElementById('backToHomeBtn')
+        };
+
+        // Initialize event listeners
+        function initEventListeners() {
+            // Home screen
+            elements.startQuizBtn.addEventListener('click', startQuiz);
+            elements.viewLeaderboardBtn.addEventListener('click', () => switchScreen('leaderboard'));
+            
+            // Quiz screen
+            elements.submitAnswerBtn.addEventListener('click', checkAnswer);
+            elements.endQuizBtn.addEventListener('click', endQuiz);
+            elements.userAnswer.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    checkAnswer();
+                }
+            });
+            
+            // Results screen
+            elements.playAgainBtn.addEventListener('click', () => switchScreen('home'));
+            elements.resultsLeaderboardBtn.addEventListener('click', () => switchScreen('leaderboard'));
+            
+            // Leaderboard screen
+            elements.backToHomeBtn.addEventListener('click', () => switchScreen('home'));
+        }
+
+        // Switch between screens
+        function switchScreen(screenName) {
+            const screens = {
+                home: elements.homeScreen,
+                quiz: elements.quizScreen,
+                results: elements.resultsScreen,
+                leaderboard: elements.leaderboardScreen
+            };
+            
+            // Hide all screens
+            Object.values(screens).forEach(screen => {
+                screen.style.display = 'none';
+            });
+            
+            // Show selected screen
+            screens[screenName].style.display = 'flex';
+            state.currentScreen = screenName;
+            
+            // Additional actions for specific screens
+            if (screenName === 'leaderboard') {
+                renderLeaderboard();
+            }
+        }
+
+        // Generate question based on difficulty
+        function generateQuestion() {
+            let num1, num2, operation;
+            
+            switch(state.difficulty) {
+                case 'easy':
+                    num1 = Math.floor(Math.random() * 10) + 1;
+                    num2 = Math.floor(Math.random() * 10) + 1;
+                    operation = ['+', '-'][Math.floor(Math.random() * 2)];
+                    break;
+                case 'medium':
+                    num1 = Math.floor(Math.random() * 20) + 10;
+                    num2 = Math.floor(Math.random() * 20) + 1;
+                    operation = ['+', '-', '*'][Math.floor(Math.random() * 3)];
+                    break;
+                case 'hard':
+                    num1 = Math.floor(Math.random() * 50) + 20;
+                    num2 = Math.floor(Math.random() * 30) + 10;
+                    operation = ['+', '-', '*', '/'][Math.floor(Math.random() * 4)];
+                    // Ensure division results in whole numbers
+                    if (operation === '/') {
+                        num2 = Math.floor(Math.random() * 10) + 1;
+                        num1 = num2 * (Math.floor(Math.random() * 10) + 1);
+                    }
+                    break;
+                default:
+                    num1 = Math.floor(Math.random() * 10) + 1;
+                    num2 = Math.floor(Math.random() * 10) + 1;
+                    operation = '+';
+            }
+            
+            let correctAnswer;
+            switch(operation) {
+                case '+': correctAnswer = num1 + num2; break;
+                case '-': correctAnswer = num1 - num2; break;
+                case '*': correctAnswer = num1 * num2; break;
+                case '/': correctAnswer = num1 / num2; break;
+                default: correctAnswer = num1 + num2;
+            }
+            
+            state.currentQuestion = {
+                num1,
+                num2,
+                operation,
+                correctAnswer
+            };
+            
+            elements.questionDisplay.textContent = `${num1} ${operation} ${num2} = ?`;
+        }
+
+        // Start quiz
+        function startQuiz() {
+            state.userName = elements.userName.value.trim();
+            state.difficulty = elements.difficulty.value;
+            
+            if (!state.userName) {
+                elements.homeFeedback.textContent = 'Please enter your name';
+                return;
+            }
+            
+            // Reset quiz state
+            state.score = 0;
+            state.timeLeft = 30;
+            state.quizActive = true;
+            state.quizHistory = [];
+            
+            // Update UI
+            elements.difficultyDisplay.textContent = `Difficulty: ${state.difficulty.charAt(0).toUpperCase() + state.difficulty.slice(1)}`;
+            elements.timerDisplay.textContent = `Time: ${state.timeLeft}s`;
+            elements.scoreDisplay.textContent = `Score: ${state.score}`;
+            elements.userNameDisplay.textContent = state.userName;
+            elements.quizFeedback.textContent = '';
+            elements.quizFeedback.className = 'feedback';
+            
+            // Generate first question
+            generateQuestion();
+            
+            // Focus on answer input
+            elements.userAnswer.value = '';
+            
+            // Start timer
+            startTimer();
+            
+            // Switch to quiz screen
+            switchScreen('quiz');
+            
+            // Focus on the answer input
+            setTimeout(() => {
+                elements.userAnswer.focus();
+            }, 100);
+        }
+
+        // Start timer
+        function startTimer() {
+            clearInterval(state.timerInterval);
+            state.timerInterval = setInterval(() => {
+                state.timeLeft--;
+                elements.timerDisplay.textContent = `Time: ${state.timeLeft}s`;
+                
+                if (state.timeLeft <= 0) {
+                    endQuiz();
+                }
+            }, 1000);
+        }
+
+        // Check answer
+        function checkAnswer() {
+            const answer = parseFloat(elements.userAnswer.value);
+            
+            if (isNaN(answer)) {
+                elements.quizFeedback.textContent = 'Please enter a valid number';
+                elements.quizFeedback.className = 'feedback error';
+                return;
+            }
+            
+            const isCorrect = answer === state.currentQuestion.correctAnswer;
+            
+            if (isCorrect) {
+                state.score++;
+                elements.scoreDisplay.textContent = `Score: ${state.score}`;
+                elements.quizFeedback.textContent = 'Correct!';
+                elements.quizFeedback.className = 'feedback success';
+            } else {
+                elements.quizFeedback.textContent = `Wrong! The correct answer is ${state.currentQuestion.correctAnswer}`;
+                elements.quizFeedback.className = 'feedback error';
+            }
+            
+            // Save question history
+            state.quizHistory.push({
+                question: `${state.currentQuestion.num1} ${state.currentQuestion.operation} ${state.currentQuestion.num2}`,
+                userAnswer: answer,
+                correctAnswer: state.currentQuestion.correctAnswer,
+                isCorrect
+            });
+            
+            // Adaptive difficulty
+            if (state.quizHistory.length >= 3) {
+                const lastThree = state.quizHistory.slice(-3);
+                const correctCount = lastThree.filter(item => item.isCorrect).length;
+                
+                if (correctCount >= 3 && state.difficulty === 'easy') {
+                    state.difficulty = 'medium';
+                    elements.difficultyDisplay.textContent = 'Difficulty: Medium';
+                    elements.quizFeedback.textContent += ' Difficulty increased to Medium!';
+                } else if (correctCount >= 3 && state.difficulty === 'medium') {
+                    state.difficulty = 'hard';
+                    elements.difficultyDisplay.textContent = 'Difficulty: Hard';
+                    elements.quizFeedback.textContent += ' Difficulty increased to Hard!';
+                } else if (correctCount <= 1 && state.difficulty === 'hard') {
+                    state.difficulty = 'medium';
+                    elements.difficultyDisplay.textContent = 'Difficulty: Medium';
+                    elements.quizFeedback.textContent += ' Difficulty decreased to Medium!';
+                } else if (correctCount <= 1 && state.difficulty === 'medium') {
+                    state.difficulty = 'easy';
+                    elements.difficultyDisplay.textContent = 'Difficulty: Easy';
+                    elements.quizFeedback.textContent += ' Difficulty decreased to Easy!';
+                }
+            }
+            
+            // Generate new question
+            generateQuestion();
+            
+            // Clear answer input and focus
+            elements.userAnswer.value = '';
+            elements.userAnswer.focus();
+        }
+
+        // End quiz
+        function endQuiz() {
+            // Stop timer
+            clearInterval(state.timerInterval);
+            state.quizActive = false;
+            
+            // Update leaderboard
+            state.leaderboard.push({ name: state.userName, score: state.score });
+            state.leaderboard.sort((a, b) => b.score - a.score);
+            state.leaderboard = state.leaderboard.slice(0, 5);
+            
+            // Display results
+            elements.finalScoreDisplay.textContent = `Final Score: ${state.score}`;
+            
+            // Render question history
+            renderQuestionHistory();
+            
+            // Switch to results screen
+            switchScreen('results');
+        }
+
+        // Render question history
+        function renderQuestionHistory() {
+            elements.historyList.innerHTML = '';
+            
+            state.quizHistory.forEach(item => {
+                const historyItem = document.createElement('div');
+                historyItem.className = `history-item ${item.isCorrect ? 'correct' : 'incorrect'}`;
+                
+                const questionText = document.createElement('div');
+                questionText.className = 'question-text';
+                questionText.textContent = `${item.question} = ${item.correctAnswer}`;
+                
+                const answerText = document.createElement('div');
+                answerText.className = 'answer-text';
+                answerText.textContent = `Your answer: ${item.userAnswer}`;
+                
+                historyItem.appendChild(questionText);
+                historyItem.appendChild(answerText);
+                
+                elements.historyList.appendChild(historyItem);
+            });
+        }
+
+        // Render leaderboard
+        function renderLeaderboard() {
+            elements.leaderboardBody.innerHTML = '';
+            
+            state.leaderboard.forEach((player, index) => {
+                const row = document.createElement('tr');
+                if (player.name === state.userName) {
+                    row.className = 'highlighted-row';
+                }
+                
+                const rankCell = document.createElement('td');
+                rankCell.textContent = index + 1;
+                
+                const nameCell = document.createElement('td');
+                nameCell.textContent = player.name;
+                
+                const scoreCell = document.createElement('td');
+                scoreCell.textContent = player.score;
+                
+                row.appendChild(rankCell);
+                row.appendChild(nameCell);
+                row.appendChild(scoreCell);
+                
+                elements.leaderboardBody.appendChild(row);
+            });
+        }
+
+        // Initialize app
+        function init() {
+            initEventListeners();
+            switchScreen('home');
+        }
+
+        // Start the application
+        init();
+    </script>
+</body>
+</html>
